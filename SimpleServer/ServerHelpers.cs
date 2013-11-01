@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Security.Policy;
 using System.Text;
 
 namespace SimpleServer
@@ -10,6 +11,17 @@ namespace SimpleServer
         public int Port { get; set; }
         public string PathToXmlFile { get; set; }
         public string PathToSqlFile { get; set; }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(string.Format("Port {0}", Port));
+            sb.AppendLine(string.Format("UseSqlDb {0}", UseSqlDb));
+            sb.AppendLine(string.Format("PathToXmlFile {0}", PathToXmlFile));
+            sb.AppendLine(string.Format("PathToSqlFile {0}", PathToSqlFile));
+            
+            return sb.ToString();            
+        }       
     }
 
     public static class ServerHelpers
