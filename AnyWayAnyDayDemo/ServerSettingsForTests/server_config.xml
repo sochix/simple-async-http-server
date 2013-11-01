@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+  <port>8888</port>
+  <useSqlDb>false</useSqlDb>
+  <pathToSqlFile>D:\test.sqlite</pathToSqlFile>
+  <pathToXmlFile>D:\test.xml</pathToXmlFile>
+</settings>
