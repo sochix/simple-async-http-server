@@ -47,22 +47,32 @@ namespace SimpleServer.Core
 
             logger.Info("Handling proxy get request with url = {0}", host);
             string result;
-            using (var webResponse = (HttpWebResponse)webRequest.GetResponse())
+
+            try
             {
-                using (var bodyStream = webResponse.GetResponseStream())
+
+                using (var webResponse = (HttpWebResponse) webRequest.GetResponse())
                 {
-                    if (bodyStream == null)
+                    using (var bodyStream = webResponse.GetResponseStream())
                     {
-                        throw new SimpleServerException
+                        if (bodyStream == null)
                         {
-                            ExceptionMessage = "Can't get body from response"
-                        };
-                    }
-                    using (var streamReader = new StreamReader(bodyStream, Encoding.UTF8))
-                    {
-                        result = streamReader.ReadToEnd();
+                            throw new SimpleServerException
+                                  {
+                                      ExceptionMessage = "Can't get body from response"
+                                  };
+                        }
+                        using (var streamReader = new StreamReader(bodyStream, Encoding.UTF8))
+                        {
+                            result = streamReader.ReadToEnd();
+                        }
                     }
                 }
+            }
+            catch (WebException)
+            {
+                logger.Error("Internal error during proxyfying");
+                result = null;
             }
 
             return result;
