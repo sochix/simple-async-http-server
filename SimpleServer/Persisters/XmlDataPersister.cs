@@ -1,63 +1,101 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml.Linq;
+using NLog;
+using SimpleServer.Helpers;
 
 namespace SimpleServer.Persisters
 {
+    /// <summary>
+    /// XML database persister
+    /// </summary>
     internal class XmlDataPersister: IPersister
     {
         private readonly string pathToSave;
         private readonly XDocument document;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public XmlDataPersister(string path)
         {
-            //TODO: check path for null or empty
-            //TODO; remove try, use Exist
+            if (String.IsNullOrEmpty(path))
+            {
+                logger.Error("Provided empty path to XML database file");
+                throw new SimpleServerException
+                {
+                    ExceptionMessage = "Provided empty path to XML database file"
+                };
+            }
+
             try
             {
-                document = XDocument.Load(path);
+                pathToSave = path;
+                if (File.Exists(path))
+                {
+                    document = XDocument.Load(path);
+                }
+                else
+                {
+                    document = new XDocument();
+                    var library = new XElement("records");
+                    document.Add(library);
+                    document.Save(path);
+                }
             }
-            catch (FileNotFoundException)
+            catch (Exception e)
             {
-                document = new XDocument();
-                InitializeFile(path);
+                logger.Error("Internal error during initializing XML database. Exception message: {0}", e.Message);
+                throw new SimpleServerException()
+                {
+                    ExceptionMessage = "Internal error during initializing XML database"
+                };
             }
-            
-            pathToSave = path; 
         }
 
         public void AddRecord(Tuple<string, string> record)
         {
-            var newRecord = new XElement("record",
-                new XAttribute("user", record.Item1),
-                new XAttribute("message", record.Item2));    
+            try
+            {
+                var newRecord = new XElement("record",
+                    new XAttribute("user", record.Item1),
+                    new XAttribute("message", record.Item2));
 
-            document.Root.Add(newRecord);
-            document.Save(pathToSave);
+                document.Root.Add(newRecord);
+                document.Save(pathToSave);
+            }
+            catch(Exception e)
+            {
+                logger.Error("Can't add new record to XML database. Exception message: {0}", e.Message);
+                throw new SimpleServerException()
+                      {
+                          ExceptionMessage = "Can't add new record to XML database"
+                      };
+            }
         }
 
         public IEnumerable<Tuple<string, string>> GetAllRecords()
         {
             var result = new List<Tuple<string, string>>();
 
-            foreach (XElement el in document.Root.Elements())
+            try
             {
-                var user = el.Attribute("user").Value;
-                var message = el.Attribute("message").Value;
-	            Console.WriteLine("{0} {1}", user, message);
-                result.Add(new Tuple<string, string>(user, message));
+                foreach (XElement el in document.Root.Elements())
+                {
+                    var user = el.Attribute("user").Value;
+                    var message = el.Attribute("message").Value;
+                    result.Add(new Tuple<string, string>(user, message));
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error("Can't get all records from XML database. Exception message: {0}", e.Message);
+                throw new SimpleServerException()
+                {
+                    ExceptionMessage = "Can't get all records from XML database"
+                };
             }
 
             return result;
-        }
-
-        private void InitializeFile(string path)
-        {
-            var library = new XElement("records");
-            document.Add(library);
-            document.Save(path);
         }
     }
 }

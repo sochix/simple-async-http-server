@@ -70,15 +70,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\LocalHttpListener.cs" />
+    <Compile Include="Core\SimpleProxy.cs" />
+    <Compile Include="Core\SimpleServer.cs" />
+    <Compile Include="Core\XmlSettingsReader.cs" />
+    <Compile Include="Helpers\ServerHelpers.cs" />
     <Compile Include="Persisters\IPersister.cs" />
-    <Compile Include="LocalHttpListener.cs" />
     <Compile Include="Persisters\MemoryDataPersister.cs" />
     <Compile Include="Persisters\SqlDataPersister.cs" />
     <Compile Include="Persisters\XmlDataPersister.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerHelpers.cs" />
-    <Compile Include="XmlSettingsReader.cs" />
+    <Compile Include="RouteHandlers\DefaultRouteHandler.cs" />
+    <Compile Include="RouteHandlers\GuestBookRouteHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="server_config.xml">

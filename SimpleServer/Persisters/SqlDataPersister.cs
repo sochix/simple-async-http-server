@@ -2,32 +2,56 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
-using System.Linq;
-using System.Text;
+using NLog;
+using SimpleServer.Helpers;
 
 namespace SimpleServer.Persisters
 {
+    /// <summary>
+    /// SQL database persister
+    /// </summary>
     internal class SqlDataPersister: IPersister
     {
         private readonly string dbConnectionString;
+        private const string UserTable = "CREATE TABLE users (id INTEGER PRIMARY KEY ASC, user VARCHAR(256))";
+        private const string MessageTable = "CREATE TABLE messages (id INTEGER PRIMARY KEY ASC, message VARCHAR(256))";
+        private const string GetAllRecordsQuery = "SELECT user, message FROM users u LEFT JOIN  messages m ON u.id = m.id";
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public SqlDataPersister(string path)
         {
+            if (String.IsNullOrEmpty(path))
+            {
+                logger.Error("Provided empty path to SQL database file");
+                throw new SimpleServerException
+                      {
+                          ExceptionMessage = "Provided empty path to SQL database file"
+                      };
+            }
+            
             dbConnectionString = String.Format("Data Source={0};Version=3;", path);
             if (File.Exists(path)) return;
 
-            SQLiteConnection.CreateFile(path);
-
-            const string userTable = "CREATE TABLE users (id INTEGER PRIMARY KEY ASC, user VARCHAR(256))";
-            const string messageTable = "CREATE TABLE messages (id INTEGER PRIMARY KEY ASC, message VARCHAR(256))";
-
-            using (var c = new SQLiteConnection(dbConnectionString))
+            try
             {
-                c.Open();
-                using (var cmd = new SQLiteCommand(String.Format("{0};{1}",userTable,messageTable), c))
+
+                SQLiteConnection.CreateFile(path);
+                using (var c = new SQLiteConnection(dbConnectionString))
                 {
-                    cmd.ExecuteNonQuery();
+                    c.Open();
+                    using (var cmd = new SQLiteCommand(String.Format("{0};{1}", UserTable, MessageTable), c))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                logger.Error("Internal error during initializing SQL database. Exception message: {0}", e.Message);
+                throw new SimpleServerException()
+                      {
+                          ExceptionMessage = "Internal error during initializing SQL database"
+                      };
             }
         }
 
@@ -36,35 +60,55 @@ namespace SimpleServer.Persisters
             string addUser = String.Format("INSERT INTO users values (NULL, '{0}')", record.Item1);
             string addMessage = String.Format("INSERT INTO messages values (NULL, '{0}')", record.Item2);
 
-            using (var c = new SQLiteConnection(dbConnectionString))
+            try
             {
-                c.Open();
-                using (var cmd = new SQLiteCommand(String.Format("{0};{1}", addUser, addMessage), c))
+                using (var c = new SQLiteConnection(dbConnectionString))
                 {
-                    cmd.ExecuteNonQuery();
+                    c.Open();
+                    using (var cmd = new SQLiteCommand(String.Format("{0};{1}", addUser, addMessage), c))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                logger.Error("Can't add new record to SQL database. Exception message: {0}", e.Message);
+                throw new SimpleServerException()
+                {
+                    ExceptionMessage = "Can't add new record to SQL database"
+                };
             }
         }
 
         public IEnumerable<Tuple<string, string>> GetAllRecords()
         {
-            string query = "SELECT user, message FROM users u LEFT JOIN  messages m ON u.id = m.id";
-
             var result = new List<Tuple<string, string>>();
 
-            using (var c = new SQLiteConnection(dbConnectionString))
+            try
             {
-                c.Open();
-                using (var cmd = new SQLiteCommand(query, c))
+                using (var c = new SQLiteConnection(dbConnectionString))
                 {
-                    using (SQLiteDataReader rdr = cmd.ExecuteReader())
+                    c.Open();
+                    using (var cmd = new SQLiteCommand(GetAllRecordsQuery, c))
                     {
-                        while (rdr.Read())
+                        using (var rdr = cmd.ExecuteReader())
                         {
-                            result.Add(new Tuple<string, string>((string)rdr[0], (string)rdr[1]));    
+                            while (rdr.Read())
+                            {
+                                result.Add(new Tuple<string, string>((string) rdr[0], (string) rdr[1]));
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                logger.Error("Can't get all records from SQL database. Exception message: {0}", e.Message);
+                throw new SimpleServerException()
+                {
+                    ExceptionMessage = "Can't get all records from SQL database"
+                };
             }
             return result;            
         }

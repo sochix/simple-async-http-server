@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace SimpleServer
+namespace SimpleServer.Persisters
 {
+    /// <summary>
+    /// Test persister, which stores all data in RAM
+    /// </summary>
     internal class MemoryDataPersister: IPersister
     {
         private readonly List<Tuple<string, string>> recordsList;

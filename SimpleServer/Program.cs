@@ -1,9 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+using SimpleServer.Core;
 
 namespace SimpleServer
 {
@@ -11,8 +7,8 @@ namespace SimpleServer
     {
         static void Main(string[] args)
         {
-            var server = new LocalHttpListener();
-            var task = Task.Factory.StartNew(server.Start);
+            var server = new Core.SimpleServer();
+            server.Start();
 
             while (true)
             {
