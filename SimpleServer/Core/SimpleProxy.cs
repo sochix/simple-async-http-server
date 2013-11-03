@@ -7,31 +7,45 @@ using SimpleServer.Helpers;
 
 namespace SimpleServer.Core
 {
-    public class SimpleProxy
+    /// <summary>
+    /// Simple synchronius proxy 
+    /// </summary>
+    internal sealed class SimpleProxy
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+       
+        /// <summary>
+        /// Proxify a given url
+        /// </summary>
+        /// <param name="url">Url to proxify</param>
+        /// <returns>String contains a url response</returns>
         public string Proxify(string url)
         {
-            if (!String.IsNullOrEmpty(url))
-            {
-                //TODO: should add a validation for params
-                logger.Info("Handling proxy get request with url = {0}", url);
-                return GetUrlData(url);
-            }
-
-            logger.Warn("Handling proxy get request with empty url.");
-
-            return ""; //TODO: this means error
+            return GetUrlData(url);            
         }
 
-        private string GetUrlData(string host)
+        private static string GetUrlData(string host)
         {
-            //TODO: check url
-            var webRequest = WebRequest.Create(host);
-            webRequest.Method = ServerHelpers.GetMethod;
-            webRequest.Credentials = CredentialCache.DefaultCredentials;
-            webRequest.ContentLength = 0;
+            WebRequest webRequest = null;
+            try
+            {
+                webRequest = WebRequest.Create(host);
+                webRequest.Method = ServerHelpers.GetMethod;
+                webRequest.Credentials = CredentialCache.DefaultCredentials;
+                webRequest.ContentLength = 0;
+            }
+            catch (UriFormatException e)
+            {
+                logger.ErrorException("Wrong url requested for proxifying", e);
+                return null;
+            }
+            catch (ArgumentNullException e)
+            {
+                logger.ErrorException("Empty url requested for proxifying", e);
+                return null;
+            }
 
+            logger.Info("Handling proxy get request with url = {0}", host);
             string result;
             using (var webResponse = (HttpWebResponse)webRequest.GetResponse())
             {

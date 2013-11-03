@@ -8,19 +8,28 @@ using SimpleServer.RouteHandlers;
 
 namespace SimpleServer.Core
 {
-    public class SimpleServer
+    /// <summary>
+    /// Server class that hides all complexity from end user
+    /// </summary>
+    public sealed class SimpleServer
     {
         private readonly LocalHttpListener httpListener;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
+        private bool isAlreadyStarted = false;
+        private readonly SimpleProxy proxy;
+        
+        /// <summary>
+        /// Default server .ctor
+        /// </summary>
         public SimpleServer()
         {
             try
             {
+                //read settings
                 var settings = XmlSettingsReader.ReadSettings(ServerHelpers.DefaultSettingsPath);
 
+                //set persister
                 IPersister persister = null;
-
                 if (settings.UseSqlDb)
                 {
                     persister = new SqlDataPersister(settings.PathToSqlFile);
@@ -32,7 +41,10 @@ namespace SimpleServer.Core
                     logger.Info("Server using XML database, located at {0}", settings.PathToXmlFile);
                 }
 
+                //create proxy
+                proxy = new SimpleProxy();
 
+                //set routes
                 var routeList = new List<Route>
                             {
                                 new Route
@@ -47,10 +59,7 @@ namespace SimpleServer.Core
                                     Description = "Return a proxified page",
                                     Method = ServerHelpers.GetMethod,
                                     Url = "/" + ServerHelpers.ProxyName + "/",
-                                    Action = (v, p) =>
-                                             {
-                                                 return new SimpleProxy().Proxify(v["url"]);
-                                             }
+                                    Action = (v, p) => proxy.Proxify(v["url"])
                                 },
                                 new Route
                                 {
@@ -75,6 +84,7 @@ namespace SimpleServer.Core
                                 }                              
                             };
 
+                //create httpListener
                 httpListener = new LocalHttpListener(settings.Port, ServerHelpers.Url, persister, routeList);
                 logger.Trace("Initialized httpListener");
             }
@@ -84,16 +94,27 @@ namespace SimpleServer.Core
             }
         }
 
+        /// <summary>
+        /// Start server
+        /// </summary>
         public void Start()
         {
-            Task.Factory.StartNew(httpListener.Start);
+            if (isAlreadyStarted) return;
+
+            Task.Factory.StartNew(httpListener.Start, TaskCreationOptions.LongRunning);
+            isAlreadyStarted = true;
             logger.Info("Server started");
         }
 
+        /// <summary>
+        /// Stop server
+        /// </summary>
         public void Stop()
         {
-            //TODO: think about multi threading
-            httpListener.Stop();
+            //we don't need to wait until httpListener thread will ends, because it longRunning task. And it will close httpListener in finalizer, can't imagine smthng better now
+            if (!isAlreadyStarted) return;
+            
+            isAlreadyStarted = false;
             logger.Info("Server stopped");
         }
     }
