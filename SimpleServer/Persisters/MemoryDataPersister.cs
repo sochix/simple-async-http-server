@@ -17,6 +17,11 @@ namespace SimpleServer.Persisters
         
         public void AddRecord(Tuple<string, string> record)
         {
+            if (record == null) return;
+
+            if (String.IsNullOrEmpty(record.Item1) || String.IsNullOrEmpty(record.Item2))
+                return;
+
             recordsList.Add(record);
         }
 

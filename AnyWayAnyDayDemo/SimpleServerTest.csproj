@@ -46,6 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PersistenceTest.cs" />
+    <Compile Include="Persisters.Test\AbstractPersisterTest.cs" />
+    <Compile Include="Persisters.Test\MemoryPersisterTest.cs" />
+    <Compile Include="Persisters.Test\SqlPersisterTest.cs" />
+    <Compile Include="Persisters.Test\XmlPersisterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RouteTest.cs" />
     <Compile Include="XmlSettingsReaderTest.cs" />
@@ -57,16 +61,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ServerSettingsForTests\incorrect_server_config.xml">
+    <Content Include="Files\incorrect_server_config.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ServerSettingsForTests\server_config.xml">
+    <Content Include="Files\server_config.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="ServerSettingsForTests\server_config_as_txt.txt">
+    <Content Include="Files\server_config_as_txt.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core.Test\" />
+    <Folder Include="RouteHandlers.Test\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

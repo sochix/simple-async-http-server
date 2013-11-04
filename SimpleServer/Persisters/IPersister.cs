@@ -6,7 +6,7 @@ namespace SimpleServer.Persisters
     /// <summary>
     /// Interface for the persister used by server
     /// </summary>
-    internal interface IPersister
+    public interface IPersister
     {
         /// <summary>
         /// Add record to database
