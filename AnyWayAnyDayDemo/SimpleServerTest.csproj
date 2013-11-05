@@ -45,6 +45,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core.Test\SimpleProxyTest.cs" />
     <Compile Include="Core.Test\XmlSettingsReaderTest.cs" />
     <Compile Include="PersistenceTest.cs" />
     <Compile Include="Persisters.Test\AbstractPersisterTest.cs" />

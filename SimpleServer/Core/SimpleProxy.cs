@@ -44,6 +44,11 @@ namespace SimpleServer.Core
                 logger.ErrorException("Empty url requested for proxifying", e);
                 return null;
             }
+            catch (Exception e)
+            {
+                logger.ErrorException("Internal proxy error", e);
+                return null;
+            }
 
             logger.Info("Handling proxy get request with url = {0}", host);
             string result;
