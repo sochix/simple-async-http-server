@@ -30,7 +30,25 @@ namespace SimpleServer.Persisters
             }
             
             dbConnectionString = String.Format("Data Source={0};Version=3;", path);
-            if (File.Exists(path)) return;
+            if (File.Exists(path))
+            {
+                try
+                {
+                    using (var c = new SQLiteConnection(dbConnectionString))
+                    {
+                        c.Open();                     
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.Error("Internal error during opening SQL database at path {0}. Exception message: {1}",path, e.Message);
+                    throw new SimpleServerException()
+                    {
+                        ExceptionMessage = String.Format("Internal error during opening SQL database at path {0}", path)
+                    };
+                }
+                return;
+            }
 
             try
             {
