@@ -7,29 +7,29 @@ namespace SimpleServerTest.Persisters.Test
 {
     public static class AbstractPersisterTest
     {
-        private static readonly Tuple<string, string> testRecord = new Tuple<string, string>("Userame", "Message");
+        public static readonly Tuple<string, string> TestRecord = new Tuple<string, string>("Userame", "Message");
         
         public static void AddRecordTest(IPersister persister)
         {
-            persister.AddRecord(testRecord);
+            persister.AddRecord(TestRecord);
 
             var records = persister.GetAllRecords();
             Assert.IsNotNull(records);
             Assert.AreEqual(1, records.Count());
-            Assert.AreEqual(testRecord, records.Single());
+            Assert.AreEqual(TestRecord, records.Single());
         }
 
         public static void AddSeveralRecordsTest(IPersister persister)
         {
             for (var i = 0; i < 100; i++)
             {
-                persister.AddRecord(testRecord);
+                persister.AddRecord(TestRecord);
             }
 
             var records = persister.GetAllRecords();
             Assert.IsNotNull(records);
             Assert.AreEqual(100, records.Count());
-            Assert.AreEqual(testRecord, records.First());
+            Assert.AreEqual(TestRecord, records.First());
         }
 
         public static void AddNullRecordTest(IPersister persister)

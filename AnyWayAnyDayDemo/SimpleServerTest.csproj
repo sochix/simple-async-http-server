@@ -47,7 +47,9 @@
   <ItemGroup>
     <Compile Include="PersistenceTest.cs" />
     <Compile Include="Persisters.Test\AbstractPersisterTest.cs" />
+    <Compile Include="Persisters.Test\LoadDataSqlPersisterTest.cs" />
     <Compile Include="Persisters.Test\MemoryPersisterTest.cs" />
+    <Compile Include="Persisters.Test\LoadDataXmlPersisterTest.cs" />
     <Compile Include="Persisters.Test\SqlPersisterTest.cs" />
     <Compile Include="Persisters.Test\XmlPersisterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,6 +63,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Files\empty_db_test.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\empty_db_test.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Files\incorrect_server_config.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -69,6 +77,15 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Files\server_config_as_txt.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\spoiled_db_test.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\test_db.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\test_db.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

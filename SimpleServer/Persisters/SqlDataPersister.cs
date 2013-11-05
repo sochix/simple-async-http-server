@@ -34,7 +34,6 @@ namespace SimpleServer.Persisters
 
             try
             {
-
                 SQLiteConnection.CreateFile(path);
                 using (var c = new SQLiteConnection(dbConnectionString))
                 {
@@ -55,6 +54,7 @@ namespace SimpleServer.Persisters
             }
         }
 
+        //TODO: too slow now, need to create bulk save method
         public void AddRecord(Tuple<string, string> record)
         {
             if (record == null) return;
