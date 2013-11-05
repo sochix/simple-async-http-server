@@ -57,7 +57,7 @@ namespace SimpleServerTest.Persisters.Test
             bool wasException = false;
             try
             {
-                persister = new SqlDataPersister("Files\\spoiled_db_test.xml");
+                persister = new SqlDataPersister("Files\\spoiled_db_test.xml"); //It's not a typo
             }
             catch
             {
