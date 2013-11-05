@@ -5,6 +5,8 @@ namespace SimpleServer.Persisters
 {
     /// <summary>
     /// Interface for the persister used by server
+    /// Because it's created only for demo purposes:
+    /// it hasn't delete methods, optimizations methods, and it isn't generic
     /// </summary>
     public interface IPersister
     {
