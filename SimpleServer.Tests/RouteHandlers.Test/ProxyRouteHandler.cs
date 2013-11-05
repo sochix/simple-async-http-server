@@ -1,11 +1,6 @@
-﻿using System;
-using System.Net;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleServer.Helpers;
-using SimpleServer.RouteHandlers;
 
 namespace SimpleServerTest.RouteHandlers.Test
 {
@@ -16,7 +11,7 @@ namespace SimpleServerTest.RouteHandlers.Test
         [TestInitialize]
         public void TestInitialize()
         {
-            server = new SimpleServer.Core.SimpleServer();
+            server = new SimpleServer.Core.SimpleServer("Files\\server_config.xml");
             server.Start();
         }
 

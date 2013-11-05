@@ -28,7 +28,7 @@ namespace SimpleServerTest.Persisters.Test
 
             Assert.IsNotNull(records);
             Assert.AreEqual(100, records.Count());
-            Assert.AreEqual(AbstractPersisterTest.TestRecord, records.First());
+            Assert.AreEqual(TestHelpers.TestRecord, records.First());
         }
 
         [TestMethod]

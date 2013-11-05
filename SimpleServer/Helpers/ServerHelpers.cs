@@ -36,7 +36,7 @@ namespace SimpleServer.Helpers
 
     public static class ServerHelpers
     {
-        public const string Url = "http://127.0.0.1";
+        public const string Url = "http://127.0.0.1"; 
         public const int Timeout = 1000;
         public const string PostMethod = "POST";
         public const string GetMethod = "GET";

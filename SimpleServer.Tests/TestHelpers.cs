@@ -8,6 +8,8 @@ namespace SimpleServerTest
 {
     public static class TestHelpers
     {
+        public static readonly Tuple<string, string> TestRecord = new Tuple<string, string>("Userame", "Message");
+
         public static WebRequest CreateWebRequest(string methodType, string absolutePath = "")
         {
             var webRequest = WebRequest.Create(String.Format("{0}:{1}/{2}/", ServerHelpers.Url,8888, absolutePath));

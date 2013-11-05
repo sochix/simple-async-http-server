@@ -12,7 +12,7 @@ namespace SimpleServerTest.RouteHandlers.Test
         [TestInitialize]
         public void TestInitialize()
         {
-            server = new SimpleServer.Core.SimpleServer();
+            server = new SimpleServer.Core.SimpleServer("Files\\server_config.xml");
             server.Start();
         }
 

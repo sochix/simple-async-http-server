@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using NLog;
 using SimpleServer.Helpers;
@@ -21,12 +22,14 @@ namespace SimpleServer.Core
         /// <summary>
         /// Default server .ctor
         /// </summary>
-        public SimpleServer()
+        public SimpleServer(string path = null)
         {
+            path = path ?? ServerHelpers.DefaultSettingsPath;
+
             try
             {
                 //read settings
-                var settings = XmlSettingsReader.ReadSettings(ServerHelpers.DefaultSettingsPath);
+                var settings = XmlSettingsReader.ReadSettings(path);
 
                 //set persister
                 IPersister persister = null;
