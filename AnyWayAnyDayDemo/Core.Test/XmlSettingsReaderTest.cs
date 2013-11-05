@@ -15,8 +15,8 @@ namespace SimpleServerTest.Core.Test
             Assert.IsNotNull(settings);
             Assert.AreEqual(8888, settings.Port);
             Assert.IsFalse(settings.UseSqlDb);
-            Assert.IsTrue(settings.PathToSqlFile.Equals("D:\\test.sqlite"));
-            Assert.IsTrue(settings.PathToXmlFile.Equals("D:\\test.xml"));
+            Assert.IsTrue(settings.PathToSqlFile.Equals("test.sqlite"));
+            Assert.IsTrue(settings.PathToXmlFile.Equals("test.xml"));
         }
 
         [TestMethod]
